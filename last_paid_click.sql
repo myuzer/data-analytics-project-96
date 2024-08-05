@@ -1,52 +1,60 @@
-WITH LastPaidClick AS (
-	SELECT
-		visitor_id,
-		MAX(visit_date) AS visit_date,
-		source,
-		medium,
-		campaign
-	FROM sessions AS s
-	WHERE
-		source LIKE '%cpc%'
-		OR source LIKE '%cpm%'
-		OR source LIKE '%cpa%'
-		OR source LIKE '%youtube%'
-		OR source LIKE '%cpp%'
-		OR source LIKE '%tg%'
-		OR source LIKE '%social%'
-		OR medium LIKE '%cpc%'
-		OR medium LIKE '%cpm%'
-		OR medium LIKE '%cpa%'
-		OR medium LIKE '%youtube%'
-		OR medium LIKE '%cpp%'
-		OR medium LIKE '%tg%'
-		OR medium LIKE '%social%'
-		OR campaign LIKE '%cpc%'
-		OR campaign LIKE '%cpm%'
-		OR campaign LIKE '%cpa%'
-		OR campaign LIKE '%youtube%'
-		OR campaign LIKE '%cpp%'
-		OR campaign LIKE '%tg%'
-		OR campaign LIKE '%social%'
-	GROUP BY 1, 3, 4, 5
+WITH paid_sessions AS (
+    SELECT
+        visitor_id,
+        visit_date,
+        source,
+        medium,
+        campaign
+    FROM sessions
+    WHERE medium IN ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
+),
+
+last_paid_click AS (
+    SELECT
+        visitor_id,
+        source AS utm_source,
+        medium AS utm_medium,
+        campaign AS utm_campaign,
+        MAX(visit_date) AS visit_date
+    FROM paid_sessions
+    GROUP BY
+        visitor_id,
+        utm_source,
+        utm_medium,
+        utm_campaign
+    ORDER BY
+        visitor_id,
+        MAX(visit_date) DESC
+),
+
+lead_data AS (
+    SELECT
+        visitor_id,
+        lead_id,
+        created_at,
+        amount,
+        closing_reason,
+        status_id
+    FROM leads
 )
+
 SELECT
-	l.visitor_id,
-	lpc.visit_date,
-	lpc.source AS utm_source,
-	lpc.medium AS utm_medium,
-	lpc.campaign AS utm_campaign,
-	l.lead_id,
-	l.created_at,
-	l.amount,
-	l.closing_reason,
-	l.status_id
-FROM leads AS l
-INNER JOIN LastPaidClick AS lpc
-USING (visitor_id)
+    lpc.visitor_id,
+    lpc.visit_date,
+    lpc.utm_source,
+    lpc.utm_medium,
+    lpc.utm_campaign,
+    ld.lead_id,
+    ld.created_at,
+    ld.amount,
+    ld.closing_reason,
+    ld.status_id
+FROM last_paid_click AS lpc
+LEFT JOIN lead_data AS ld
+    ON lpc.visitor_id = ld.visitor_id
 ORDER BY
-	amount DESC NULLS LAST,
-	visit_date ASC,
-	utm_source ASC,
-	utm_medium ASC,
-	utm_campaign ASC;
+    ld.amount DESC NULLS LAST,
+    lpc.visit_date ASC,
+    lpc.utm_source ASC,
+    lpc.utm_medium ASC,
+    lpc.utm_campaign ASC;
