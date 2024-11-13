@@ -1,11 +1,11 @@
 -- 1. Сколько пользователей заходит на сайт?
 
-SELECT COUNT(DISTINCT visitor_id)
+SELECT COUNT(DISTINCT visitor_id) AS visitors_count
 FROM sessions;
 
 SELECT
     TO_CHAR(visit_date, 'YYYY-MM-DD') AS v_date,
-    COUNT(DISTINCT visitor_id) AS visitor_count
+    COUNT(DISTINCT visitor_id) AS visitors_count
 FROM sessions
 GROUP BY v_date;
 
@@ -15,14 +15,14 @@ GROUP BY v_date;
 SELECT
     LOWER(source) AS source,
     TO_CHAR(visit_date, 'YYYY-MM-DD') AS v_date,
-    COUNT(visitor_id) AS visitor_count
+    COUNT(DISTINCT visitor_id) AS visitor_count
 FROM sessions
 GROUP BY source, v_date
 ORDER BY v_date;
 
 SELECT
     LOWER(source) AS source,
-    COUNT(visitor_id) AS visitor_count
+    COUNT(DISTINCT visitor_id) AS visitor_count
 FROM sessions
 GROUP BY source
 ORDER BY visitor_count DESC;
