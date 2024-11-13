@@ -105,7 +105,9 @@ SELECT
     ROUND(successful_sales_count / lead_count::NUMERIC * 100, 2) AS lead_to_sale
 FROM count_conversion;
 
--- 4.2. Какая конверсия из клика в лид? А из лида в оплату? (по бесплатным каналам)
+
+/* 4.2. Какая конверсия из клика в лид?
+   А из лида в оплату? (по бесплатным каналам) */
 
 WITH free_sessions AS (
     SELECT
@@ -169,6 +171,7 @@ SELECT
     ROUND(lead_count / free_click_count::NUMERIC * 100, 2) AS click_to_lead,
     ROUND(successful_sales_count / lead_count::NUMERIC * 100, 2) AS lead_to_sale
 FROM count_conversion;
+
 
 -- 5. Сколько мы тратим по разным каналам в динамике?
 
@@ -302,6 +305,7 @@ WHERE utm_source IN ('yandex', 'vk')
 GROUP BY
 	visit_date,
 	utm_source;
+
 
 -- 6.1. Окупаются ли каналы (vk и yandex)?
 
@@ -479,6 +483,7 @@ SELECT
 FROM t1
 GROUP BY source
 ORDER BY overall_revenue DESC NULLS LAST;
+
 
 -- CPU, CPL, CPPU, ROI
 
