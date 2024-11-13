@@ -46,7 +46,7 @@ WITH paid_sessions AS (
     SELECT
         *,
         ROW_NUMBER()
-            OVER (PARTITION BY visitor_id ORDER BY visit_date DESC)
+        OVER (PARTITION BY visitor_id ORDER BY visit_date DESC)
         AS rn
     FROM sessions
     WHERE medium IN ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
@@ -113,7 +113,7 @@ WITH free_sessions AS (
     SELECT
         *,
         ROW_NUMBER()
-            OVER (PARTITION BY visitor_id ORDER BY visit_date DESC)
+        OVER (PARTITION BY visitor_id ORDER BY visit_date DESC)
         AS rn
     FROM sessions
     WHERE medium IN ('organic')
@@ -217,7 +217,7 @@ last_paid_click AS (
         l.status_id,
         l.amount,
         ROW_NUMBER()
-            OVER (PARTITION BY s.visitor_id ORDER BY s.visit_date DESC)
+        OVER (PARTITION BY s.visitor_id ORDER BY s.visit_date DESC)
         AS rn,
         TO_CHAR(s.visit_date, 'YYYY-MM-DD') AS visit_date,
         LOWER(s.source) AS utm_source,
@@ -303,8 +303,8 @@ SELECT
 FROM t1
 WHERE utm_source IN ('yandex', 'vk')
 GROUP BY
-	visit_date,
-	utm_source;
+    visit_date,
+    utm_source;
 
 
 -- 6.1. Окупаются ли каналы (vk и yandex)?
@@ -351,7 +351,7 @@ last_paid_click AS (
         l.status_id,
         l.amount,
         ROW_NUMBER()
-            OVER (PARTITION BY s.visitor_id ORDER BY s.visit_date DESC)
+        OVER (PARTITION BY s.visitor_id ORDER BY s.visit_date DESC)
         AS rn,
         TO_CHAR(s.visit_date, 'YYYY-MM-DD') AS visit_date,
         LOWER(s.source) AS utm_source,
@@ -444,7 +444,7 @@ WITH paid_sessions AS (
     SELECT
         *,
         ROW_NUMBER()
-            OVER (PARTITION BY visitor_id ORDER BY visit_date DESC)
+        OVER (PARTITION BY visitor_id ORDER BY visit_date DESC)
         AS rn
     FROM sessions
     WHERE medium IN ('organic')
@@ -529,7 +529,7 @@ last_paid_click AS (
         l.status_id,
         l.amount,
         ROW_NUMBER()
-            OVER (PARTITION BY s.visitor_id ORDER BY s.visit_date DESC)
+        OVER (PARTITION BY s.visitor_id ORDER BY s.visit_date DESC)
         AS rn,
         TO_CHAR(s.visit_date, 'YYYY-MM-DD') AS visit_date,
         LOWER(s.source) AS utm_source,
@@ -621,4 +621,3 @@ SELECT
     ROUND((total_cost / total_purchases), 2) AS cppu,
     ROUND(((total_revenue - total_cost) / total_cost * 100.0), 2) AS roi
 FROM t2;
-
