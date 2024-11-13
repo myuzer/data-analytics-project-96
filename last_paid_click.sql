@@ -2,7 +2,7 @@ WITH paid_sessions AS (
     SELECT
         *,
         ROW_NUMBER()
-            OVER (PARTITION BY visitor_id ORDER BY visit_date DESC)
+        OVER (PARTITION BY visitor_id ORDER BY visit_date DESC)
         AS rn
     FROM sessions
     WHERE medium IN ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
@@ -38,4 +38,3 @@ ORDER BY
     utm_medium ASC,
     utm_campaign ASC
 LIMIT 10;
-

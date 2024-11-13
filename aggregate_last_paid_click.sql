@@ -40,7 +40,7 @@ last_paid_click AS (
         l.status_id,
         l.amount,
         ROW_NUMBER()
-            OVER (PARTITION BY s.visitor_id ORDER BY s.visit_date DESC)
+        OVER (PARTITION BY s.visitor_id ORDER BY s.visit_date DESC)
         AS rn,
         TO_CHAR(s.visit_date, 'YYYY-MM-DD') AS visit_date,
         LOWER(s.source) AS utm_source,
